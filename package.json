@@ -12,6 +12,8 @@
 	"author": "",
 	"license": "MIT",
 	"dependencies": {
+		"obsidian-community-lib": "^2.0.2",
+		"rdf-from-markdown": "^0.0.9",
 		"vue": "^3.2.31"
 	},
 	"devDependencies": {
