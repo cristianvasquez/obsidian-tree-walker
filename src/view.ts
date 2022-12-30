@@ -1,14 +1,17 @@
 import {ItemView, WorkspaceLeaf} from 'obsidian';
 import {App as VueApp, createApp} from 'vue';
-import App from './App.vue';
+import App from './ui/App.vue';
+import {createPinia} from 'pinia'
 
-export const VIEW_TYPE: string = 'my-view';
+export const VIEW_TYPE: string = 'tree-walker-view';
 
-export class MyView extends ItemView {
+export class MainView extends ItemView {
 	vueapp: VueApp;
+	private appContext: any;
 
-	constructor(leaf: WorkspaceLeaf) {
+	constructor(leaf: WorkspaceLeaf, appContext: any) {
 		super(leaf);
+		this.appContext = appContext
 	}
 
 	getViewType(): string {
@@ -16,7 +19,7 @@ export class MyView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return "Vue Stater";
+		return "Tree walker";
 	}
 
 	getIcon(): string {
@@ -27,10 +30,13 @@ export class MyView extends ItemView {
 		const container = this.containerEl.children[1];
 		container.empty();
 		container.createEl("div", {
-			cls: "my-plugin-view"
+			cls: "tree-walker-view"
 		});
+		const pinia = createPinia()
 		this.vueapp = createApp(App);
-		this.vueapp.mount('.my-plugin-view');
+		this.vueapp.provide('context', this.appContext)
+		this.vueapp.use(pinia)
+		this.vueapp.mount('.tree-walker-view');
 	}
 
 	async onClose() {

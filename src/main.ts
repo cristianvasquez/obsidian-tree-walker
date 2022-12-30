@@ -1,28 +1,85 @@
-import {Plugin} from 'obsidian';
+import {
+	App,
+	Editor,
+	ItemView,
+	MarkdownPostProcessorContext,
+	Plugin,
+	PluginSettingTab,
+	Setting,
+	TFile,
+	WorkspaceLeaf
+} from "obsidian";
+import {EventEmitter} from "./lib/EventEmitter.js";
+import {MainView, VIEW_TYPE} from './view'
+import {PLUGIN_NAME} from "./consts";
 
-import {MyView, VIEW_TYPE} from './view'
-
-interface MyPluginSettings {
+interface TreeWalkerSettings {
 	mySetting: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
+const DEFAULT_SETTINGS: TreeWalkerSettings = {
 	mySetting: 'default'
 }
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class TreeWalker extends Plugin {
+	settings: TreeWalkerSettings;
 
 	async onload() {
 		await this.loadSettings();
-		this.registerView(
-			VIEW_TYPE,
-			(leaf) => new MyView(leaf)
-		)
-		this.addRibbonIcon('dice', 'Open my view', (evt) => {
-			this.activateView()
-		})
 
+		/**
+		 * Event logic
+		 */
+
+
+		const events = new EventEmitter()
+		const saveCommandDefinition = (this.app as any).commands?.commands?.['editor:save-file'];
+		const save = saveCommandDefinition?.callback;
+		if (typeof save === 'function') {
+			saveCommandDefinition.callback = async () => {
+				const file = this.app.workspace.getActiveFile();
+				events.emit('index', file)
+			};
+		}
+		// @ts-ignore
+		let plugin = app.plugins.plugins[PLUGIN_NAME]
+		plugin.registerEvent(
+			this.app.metadataCache.on('changed', file => {
+				console.log('file changed')
+				events.emit('update', file)
+			})
+		)
+		plugin.registerEvent(
+			this.app.vault.on('rename', async (file, oldPath) => {
+				if (!(file instanceof TFile)) return
+				console.log('renaming')
+				// await deleteIndex(oldPath)
+				events.emit('update', file)
+			})
+		)
+		plugin.registerEvent(
+			this.app.vault.on('delete', async af => {
+				if (!(af instanceof TFile)) return
+				console.log('deleting')
+				// await deleteIndex(af.path)
+				events.emit('update', undefined)
+			})
+		)
+		plugin.registerEvent(
+			this.app.workspace.on('file-open', (file) => {
+				events.emit('update', file)
+			})
+		)
+
+		const appContext = {
+			app: this.app,
+			events: events,
+			plugin: plugin
+		}
+
+		this.registerView(VIEW_TYPE, (leaf) => new MainView(leaf, appContext))
+
+		await this.activateView()
 	}
 
 	onunload() {
@@ -40,13 +97,10 @@ export default class MyPlugin extends Plugin {
 	async activateView() {
 		if (this.app.workspace.getLeavesOfType(VIEW_TYPE).length === 0) {
 			await this.app.workspace.getRightLeaf(false).setViewState({
-				type: VIEW_TYPE,
-				active: true,
+				type: VIEW_TYPE, active: true,
 			})
 		}
-		this.app.workspace.revealLeaf(
-			this.app.workspace.getLeavesOfType(VIEW_TYPE)[0]
-		)
+		this.app.workspace.revealLeaf(this.app.workspace.getLeavesOfType(VIEW_TYPE)[0])
 	}
 }
 

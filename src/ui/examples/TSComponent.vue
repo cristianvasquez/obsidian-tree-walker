@@ -1,4 +1,5 @@
 <template>
+	I'm here!
 	<h2>{{ hi }}</h2>
 </template>
 

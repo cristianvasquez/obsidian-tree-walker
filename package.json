@@ -1,7 +1,6 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "obsidian-tree-walker",
 	"version": "1.0.1",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
@@ -9,10 +8,12 @@
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "Cristian Vasquez",
 	"license": "MIT",
 	"dependencies": {
 		"obsidian-community-lib": "^2.0.2",
+		"pinia": "^2.0.28",
+		"rdf-entity-webcomponent": "^0.6.7",
 		"rdf-from-markdown": "^0.0.9",
 		"vue": "^3.2.31"
 	},
