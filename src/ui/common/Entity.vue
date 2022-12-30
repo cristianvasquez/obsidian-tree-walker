@@ -24,8 +24,8 @@ const props = defineProps({
 		</div>
 	</template>
 	<template v-else>
-		[{{ entity.label.string }}]
-		<!--		<term :term="entity"></term>-->
+		<div class="term">[{{ entity.label.string }}]</div>
+<!--				<term :term="entity"></term>-->
 	</template>
 
 </template>
@@ -35,5 +35,7 @@ const props = defineProps({
 	display: flex;
 	flex-direction: column;
 	border: 1px solid #d1d1d1;
+	margin-left: auto;
+	margin-right: auto;
 }
 </style>

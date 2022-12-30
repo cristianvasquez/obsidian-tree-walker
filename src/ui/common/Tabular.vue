@@ -29,6 +29,9 @@ const model = ref()
 
 <style>
 
+.term{
+	word-break: break-word;
+}
 
 .main-header {
 	margin-left: auto;
@@ -54,44 +57,6 @@ const model = ref()
 	padding-left: 10px;
 }
 
-.rows {
-	display: flex;
-	flex-direction: column;
-}
-
-.row > :nth-child(1) {
-	align-self: flex-start;
-	width: 35%;
-	word-break: break-all;
-	margin-top: 1rem;
-	margin-left: 1%;
-	margin-right: 1rem;
-}
-
-.row > :nth-child(2) {
-	wrap-option: wrap;
-	width: 65%;
-	word-break: break-all;
-	margin-left: 1rem;
-	margin-right: auto;
-}
-
-ul {
-	display: flex;
-	flex-direction: column;
-	list-style: none;
-	gap: 5px;
-	justify-content: center;
-	padding-left: 5px;
-}
-
-ol {
-	display: flex;
-	flex-direction: column;
-	gap: 5px;
-	justify-content: center;
-	padding-left: 5px;
-}
 
 div .bringDown {
 	color: #4f4f4f;

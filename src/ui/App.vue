@@ -30,7 +30,7 @@ onMounted(async () => {
 	console.log('Start build index')
 	const index = await buildIndex(basePath)
 	const termMapper = createTermMapper({index})
-	console.log('Index built')
+	console.log('Index', index)
 
 	// @ts-ignore
 	// const currentFile = app.workspace?.activeLeaf?.view?.file
@@ -57,7 +57,7 @@ onMounted(async () => {
 
 async function triplifyCurrent(termMapper: any) {
 	const text = await getActiveFileContent(false)
-	pointer.value = toRdf(text, {termMapper, name})
+	pointer.value = toRdf(text, {termMapper, path: name}, {splitOnTag: false, splitOnHeader: true, addLabels: true})
 	ver.value = ver.value + 1
 }
 
