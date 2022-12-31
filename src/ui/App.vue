@@ -1,26 +1,16 @@
-<template>
-	<h2>Debug</h2>
-
-	<template v-if="pointer">
-		<tabular :key="ver" :pointer="pointer"/>
-	</template>
-
-</template>
-
 <script setup lang="tsx">
 import {onMounted, ref} from "vue";
 import {inject} from '@vue/runtime-core'
 import {buildIndex} from 'rdf-from-markdown/src/indexers/buildIndex.js'
-import {createTermMapper} from 'rdf-from-markdown/src/termMapper/defaultUriResolver.js'
+import {createTermMapper} from 'rdf-from-markdown/src/termMapper/defaultTermMapper.js'
 import {toRdf} from 'rdf-from-markdown'
 import {getActiveFileContent} from 'obsidian-community-lib'
 import Tabular from "./common/Tabular.vue";
+import {baseNamespace} from './config.js'
 
 const context = inject('context')
 
 const basePath = this.app.vault.adapter.basePath
-const activeFile = this.app.workspace.getActiveFile();
-const name = activeFile.basename
 
 const pointer = ref()
 let ver = ref(1)
@@ -29,7 +19,7 @@ onMounted(async () => {
 
 	console.log('Start build index')
 	const index = await buildIndex(basePath)
-	const termMapper = createTermMapper({index})
+	const termMapper = createTermMapper({index, baseNamespace})
 	console.log('Index', index)
 
 	// @ts-ignore
@@ -56,12 +46,24 @@ onMounted(async () => {
 
 
 async function triplifyCurrent(termMapper: any) {
+
+	const activeFile = this.app.workspace.getActiveFile();
+	const name = activeFile.basename
 	const text = await getActiveFileContent(false)
 	pointer.value = toRdf(text, {termMapper, path: name}, {splitOnTag: false, splitOnHeader: true, addLabels: true})
 	ver.value = ver.value + 1
 }
 
 </script>
+
+<template>
+	<h2>Debug</h2>
+
+	<template v-if="pointer">
+		<tabular :key="ver" :pointer="pointer"/>
+	</template>
+
+</template>
 
 <style scoped>
 h2 {

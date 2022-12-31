@@ -29,34 +29,9 @@ const model = ref()
 
 <style>
 
-.term{
+.term {
 	word-break: break-word;
 }
-
-.main-header {
-	margin-left: auto;
-	margin-right: auto;
-	margin-bottom: 15px;
-}
-
-.main-header h2 {
-	margin-top: 15px;
-	margin-bottom: 15px;
-	font-size: 32px;
-	text-align: center;
-}
-
-.main-header a {
-	font-size: 18px;
-	text-transform: uppercase;
-	text-align: center;
-}
-
-.header {
-	font-size: 18px;
-	padding-left: 10px;
-}
-
 
 div .bringDown {
 	color: #4f4f4f;

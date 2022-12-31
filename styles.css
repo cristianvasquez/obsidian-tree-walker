@@ -6,13 +6,16 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
+  margin: auto 10px auto 20px;
+  gap: 10px;
 }
 .values {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
-  border: #3cff00 solid 5px;
+  margin: auto;
+  gap: 10px;
 }
 .row {
   border: #370367 solid 1px;
@@ -20,35 +23,23 @@
   flex-direction: row;
   justify-content: space-around;
 }
+.entity-header {
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  word-break: break-word;
+}
 .entity {
   display: flex;
   flex-direction: column;
-  border: 1px solid #d1d1d1;
+  border: 1px dashed #d1d1d1;
+  border-radius: 10px;
   margin-left: auto;
   margin-right: auto;
 }
 .term {
   word-break: break-word;
-}
-.main-header {
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 15px;
-}
-.main-header h2 {
-  margin-top: 15px;
-  margin-bottom: 15px;
-  font-size: 32px;
-  text-align: center;
-}
-.main-header a {
-  font-size: 18px;
-  text-transform: uppercase;
-  text-align: center;
-}
-.header {
-  font-size: 18px;
-  padding-left: 10px;
 }
 div .bringDown {
   color: #4f4f4f;

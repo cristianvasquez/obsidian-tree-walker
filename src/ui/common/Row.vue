@@ -1,7 +1,9 @@
 <script setup lang='ts'>
-import {defineProps, onMounted, ref, watch} from 'vue'
+import {computed, defineProps, onMounted, ref, watch} from 'vue'
 import Term from "./Term.vue";
 import Entity from "./Entity.vue";
+import rdf from 'rdf-from-markdown/src/rdf-ext.js'
+import ns from 'rdf-from-markdown/src/namespaces.js'
 
 const props = defineProps({
 	row: {
@@ -9,16 +11,30 @@ const props = defineProps({
 		type: Object,
 	},
 })
+
+
+const ignored = rdf.termSet([ns.dot.contains, ns.dot.related])
+
+const showProperties = computed(() => {
+	for (const prop of props.row.properties) {
+		if (!ignored.has(prop.term)) {
+			return true
+		}
+	}
+})
+
+
 </script>
 
 <template>
 	<div class="row">
-		<div class="properties">
-			<template v-for="current of row.properties">
-				<term :term="current"/>
-			</template>
-		</div>
-
+		<template v-if="showProperties">
+			<div class="properties">
+				<template v-for="current of row.properties">
+					<entity :entity="current"/>
+				</template>
+			</div>
+		</template>
 		<div class="values">
 			<template v-for="current of row.values">
 				<entity :entity="current"/>
@@ -30,21 +46,14 @@ const props = defineProps({
 <style>
 
 
-/*.rows > :nth-child(1n) {*/
-/*	border-top: 1px solid #ef5252;*/
-/*}*/
-
 .properties {
 	border: blue solid 1px;
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 	justify-content: space-around;
-
-	/*width: fit-content;*/
-	/*max-width: fit-content;*/
-
-
+	margin: auto 10px auto 20px;
+	gap: 10px;
 }
 
 .values {
@@ -52,10 +61,8 @@ const props = defineProps({
 	flex-direction: row;
 	flex-wrap: wrap;
 	justify-content: space-around;
-
-	border: #3cff00 solid 5px;
-	/*width: fit-content;*/
-
+	margin: auto;
+	gap: 10px;
 }
 
 .row {
@@ -63,7 +70,6 @@ const props = defineProps({
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
-
 }
 
 </style>
