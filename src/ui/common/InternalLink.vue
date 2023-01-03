@@ -11,21 +11,27 @@ function getFileTitle(path: string): string {
 	return path;
 }
 
+function getTrailing(url: string):string{
+	return url.substring(url.lastIndexOf('#') + 1)
+}
+
 const context = inject('context')
 
 const props = defineProps({
-	linkTo: {
-		type: String as PropType<string>,
-		required: true
+	wikipath: {
+		type: String,
 	},
-	isSameNote: {
+	linktext: {
 		type: Boolean,
-		required: false
 	}
 })
 
+const inVault = computed(()=> {
+	return isInVault(props.wikipath)
+})
+
 async function open(event: MouseEvent) {
-	await openOrSwitch(props.linkTo, event)
+	await openOrSwitch(props.wikipath, event)
 }
 
 async function hover(event: MouseEvent) {
@@ -35,38 +41,41 @@ async function hover(event: MouseEvent) {
 		getViewType: () => VIEW_NAME
 	}
 
-	await hoverPreview(event, view, props.linkTo)
+	await hoverPreview(event, view, props.linktext ?? props.wikipath)
 }
 
 onMounted(() => {
 	// console.log('Mounted', props.linkTo)
 })
 
-const inVault = computed(() => {
-	return isInVault(props.linkTo)
-})
 
 </script>
 
 <template>
-	<template v-if="isSameNote">
+	<template v-if="wikipath">
+
 				<span
 					class="internal-link"
+					@click="open"
 					@mouseover="hover"
 				>
-					<a>{{ getFileTitle(props.linkTo) }}</a>
-				</span>
+          <a
+			  :class="inVault?'':'is-unresolved'"
+			  class="internal-link"
+		  >{{ getFileTitle(props.wikipath) }}</a
+		  >
+        </span>
+
+
 	</template>
 	<template v-else>
 		<span
 			class="internal-link"
-			@click="open"
 			@mouseover="hover"
 		>
           <a
-			  :class="inVault?'':'is-unresolved'"
 			  class="internal-link"
-		  >{{ getFileTitle(props.linkTo) }}</a
+		  >{{ getTrailing(props.linktext) }}</a
 		  >
         </span>
 

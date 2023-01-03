@@ -15,20 +15,17 @@ const props = defineProps({
 	},
 })
 
-function isInternal(term) {
-	return props.pointer.node(term).out(ns.dot.wikiPath).term || term.value.startsWith(baseNamespace().value)
-}
 
-const wikiPath = computed(() => {
+const internalLink = computed(() => {
 
-	const linkTo = props.pointer.node(props.entity.term).out(ns.dot.wikiPath).value
-	if (!linkTo) {
-		return
-	}
-	const notePath = props.pointer.out(ns.dot.wikiPath).value
-	return {
-		linkTo,
-		isSameNote:linkTo.startsWith(notePath)
+	const wikipath = props.pointer.node(props.entity.term).out(ns.dot.wikipath).value
+	const linktext =  props.pointer.node(props.entity.term).out(ns.dot.linktext).value
+
+	if (wikipath || linktext){
+		return {
+			wikipath,
+			linktext
+		}
 	}
 
 })
@@ -40,8 +37,8 @@ const wikiPath = computed(() => {
 	<template v-if="entity.rows">
 		<div class="entity">
 			<div class="entity-header">
-				<template v-if="wikiPath">
-					<InternalLink :linkTo="wikiPath.linkTo" :isSameNote="wikiPath.isSameNote"/>
+				<template v-if="internalLink">
+					<InternalLink :wikipath="internalLink.wikipath" :linktext="internalLink.linktext"/>
 				</template>
 				<template v-else>
 					<div class="term">{{ entity.label.string }}</div>
@@ -53,8 +50,8 @@ const wikiPath = computed(() => {
 		</div>
 	</template>
 	<template v-else>
-		<template v-if="wikiPath">
-			<InternalLink :linkTo="wikiPath.linkTo" :isSameNote="wikiPath.isSameNote"/>
+		<template v-if="internalLink">
+			<InternalLink :wikipath="internalLink.wikipath" :linktext="internalLink.linktext"/>
 		</template>
 		<template v-else>
 			<div class="term">{{ entity.label.string }}</div>

@@ -14,7 +14,7 @@
 		"obsidian-community-lib": "^2.0.2",
 		"pinia": "^2.0.28",
 		"rdf-entity-webcomponent": "^0.6.7",
-		"vault-triplifier": "^0.0.16",
+		"vault-triplifier": "^0.0.24",
 		"vue": "^3.2.31"
 	},
 	"devDependencies": {

@@ -2,7 +2,7 @@ import { rdf, ns } from './config.js'
 
 
 const ignoreProperties = rdf.termSet(
-	[ ns.schema.name, ns.rdfs.label, ns.dot.wikiPath])
+	[ ns.schema.name, ns.rdfs.label, ns.dot.wikipath, ns.dot.linktext])
 
 const externalLabels = rdf.clownface({ dataset: rdf.dataset() })
 

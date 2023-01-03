@@ -1,38 +1,44 @@
 <script setup lang="tsx">
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {inject} from '@vue/runtime-core'
 import {getActiveFileContent} from 'obsidian-community-lib'
 import Tabular from "./common/Tabular.vue";
-import {createTriplifier, ns, rdf} from './config.js'
+import {createTriplifier, triplifierOptions} from './config.js'
 
 const context = inject('context')
 
 const pointer = ref()
 let ver = ref(1)
 
+
+const turtle = ref()
+const debugLink = computed(() => {
+	return `https://converter.zazuko.com/#value=${encodeURIComponent(turtle.value)}&format=text%2Fn3`
+})
+
 onMounted(async () => {
-	const triplifier = await createTriplifier(app)
+	const toRdf = await createTriplifier(app)
 
 	const activeFile = this.app.workspace.getActiveFile();
 	if (activeFile) {
-		await triplifyCurrent(triplifier, activeFile)
+		await triplifyCurrent(toRdf, activeFile)
 	}
 
 	context.events.on('update', async (file) => {
-		await triplifyCurrent(triplifier, file)
+		await triplifyCurrent(toRdf, file)
 	})
 
 	context.events.on('index', async (file) => {
-		await triplifyCurrent(triplifier, file)
+		await triplifyCurrent(toRdf, file)
 	})
 })
 
 
-async function triplifyCurrent(triplifier, file) {
+async function triplifyCurrent(toRdf, file) {
 
 	const text = await getActiveFileContent(false)
-	pointer.value = triplifier.toRdf(text, {path: file.path})
-	// console.log(pointer.value.dataset.toString())
+	pointer.value = toRdf(text, {path: file.path}, triplifierOptions)
+	turtle.value = pointer.value.dataset.toString()
 	ver.value = ver.value + 1
 
 }
@@ -40,7 +46,7 @@ async function triplifyCurrent(triplifier, file) {
 </script>
 
 <template>
-	<h2>Debug</h2>
+	<h2><a :href="debugLink">Debug</a></h2>
 
 	<template v-if="pointer">
 		<tabular :key="ver" :pointer="pointer"/>
