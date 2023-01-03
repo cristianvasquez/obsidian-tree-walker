@@ -1,5 +1,5 @@
 import { createModel } from 'rdf-entity-webcomponent/src/model.js'
-import rdf from 'rdf-from-markdown/src/rdf-ext.js'
+import { rdf } from '../config.js'
 
 function createListModel ({ dataset, terms }, options) {
 	const subjects = rdf.termSet()

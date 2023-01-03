@@ -23,6 +23,9 @@
   flex-direction: row;
   justify-content: space-around;
 }
+.internal {
+  border: blueviolet solid 1px;
+}
 .entity-header {
   padding-left: 15px;
   padding-right: 15px;

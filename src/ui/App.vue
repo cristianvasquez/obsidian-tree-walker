@@ -1,57 +1,40 @@
 <script setup lang="tsx">
 import {onMounted, ref} from "vue";
 import {inject} from '@vue/runtime-core'
-import {buildIndex} from 'rdf-from-markdown/src/indexers/buildIndex.js'
-import {createTermMapper} from 'rdf-from-markdown/src/termMapper/defaultTermMapper.js'
-import {toRdf} from 'rdf-from-markdown'
 import {getActiveFileContent} from 'obsidian-community-lib'
 import Tabular from "./common/Tabular.vue";
-import {baseNamespace} from './config.js'
+import {createTriplifier, ns, rdf} from './config.js'
 
 const context = inject('context')
-
-const basePath = this.app.vault.adapter.basePath
 
 const pointer = ref()
 let ver = ref(1)
 
 onMounted(async () => {
+	const triplifier = await createTriplifier(app)
 
-	console.log('Start build index')
-	const index = await buildIndex(basePath)
-	const termMapper = createTermMapper({index, baseNamespace})
-	console.log('Index', index)
+	const activeFile = this.app.workspace.getActiveFile();
+	if (activeFile) {
+		await triplifyCurrent(triplifier, activeFile)
+	}
 
-	// @ts-ignore
-	// const currentFile = app.workspace?.activeLeaf?.view?.file
-	// if (currentFile) {
-	// 	// updateView(currentFile)
-	// 	await triplifyCurrent(termMapper)
-	// }
-	await triplifyCurrent(termMapper)
 	context.events.on('update', async (file) => {
-		// updateView(file)
-		// ver.value = ver.value + 1
-		await triplifyCurrent(termMapper)
+		await triplifyCurrent(triplifier, file)
 	})
 
 	context.events.on('index', async (file) => {
-		// const note = await updateView(file)
-		// const size = await indexNote(context.triplestore, note, context.ns, context.uriResolvers)
-		// console.log(`indexed ${size} triples`)
-		// ver.value = ver.value + 1
-		await triplifyCurrent(termMapper)
+		await triplifyCurrent(triplifier, file)
 	})
 })
 
 
-async function triplifyCurrent(termMapper: any) {
+async function triplifyCurrent(triplifier, file) {
 
-	const activeFile = this.app.workspace.getActiveFile();
-	const name = activeFile.basename
 	const text = await getActiveFileContent(false)
-	pointer.value = toRdf(text, {termMapper, path: name}, {splitOnTag: false, splitOnHeader: true, addLabels: true})
+	pointer.value = triplifier.toRdf(text, {path: file.path})
+	// console.log(pointer.value.dataset.toString())
 	ver.value = ver.value + 1
+
 }
 
 </script>

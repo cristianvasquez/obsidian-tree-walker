@@ -2,8 +2,7 @@ import {ItemView, WorkspaceLeaf} from 'obsidian';
 import {App as VueApp, createApp} from 'vue';
 import App from './ui/App.vue';
 import {createPinia} from 'pinia'
-
-export const VIEW_TYPE: string = 'tree-walker-view';
+import {VIEW_NAME} from './consts.js'
 
 export class MainView extends ItemView {
 	vueapp: VueApp;
@@ -15,7 +14,7 @@ export class MainView extends ItemView {
 	}
 
 	getViewType(): string {
-		return VIEW_TYPE;
+		return VIEW_NAME;
 	}
 
 	getDisplayText(): string {

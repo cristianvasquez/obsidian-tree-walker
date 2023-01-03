@@ -1,12 +1,14 @@
 <script setup lang='ts'>
 import {computed, defineProps, onMounted, ref, watch} from 'vue'
-import Term from "./Term.vue";
 import Entity from "./Entity.vue";
-import rdf from 'rdf-from-markdown/src/rdf-ext.js'
-import ns from 'rdf-from-markdown/src/namespaces.js'
+import {rdf, ns} from '../config.js'
 
 const props = defineProps({
 	row: {
+		required: true,
+		type: Object,
+	},
+	pointer: {
 		required: true,
 		type: Object,
 	},
@@ -31,13 +33,13 @@ const showProperties = computed(() => {
 		<template v-if="showProperties">
 			<div class="properties">
 				<template v-for="current of row.properties">
-					<entity :entity="current"/>
+					<entity :entity="current" :pointer="pointer"/>
 				</template>
 			</div>
 		</template>
 		<div class="values">
 			<template v-for="current of row.values">
-				<entity :entity="current"/>
+				<entity :entity="current" :pointer="pointer"/>
 			</template>
 		</div>
 	</div>

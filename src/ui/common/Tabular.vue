@@ -3,7 +3,7 @@
 import {defineProps, onMounted, ref, watch} from 'vue'
 import {createListModel} from './viewModel.js'
 import Entity from "./Entity.vue";
-import {defaultOptions} from './options'
+import {defaultOptions} from '../view-options.js'
 
 const props = defineProps({
 	pointer: {
@@ -23,7 +23,7 @@ const model = ref()
 
 <template>
 	<template v-for="entity of model">
-		<entity :entity="entity"/>
+		<entity :entity="entity" :pointer="pointer"/>
 	</template>
 </template>
 

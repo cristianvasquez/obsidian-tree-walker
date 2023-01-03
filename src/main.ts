@@ -10,8 +10,8 @@ import {
 	WorkspaceLeaf
 } from "obsidian";
 import {EventEmitter} from "./lib/EventEmitter.js";
-import {MainView, VIEW_TYPE} from './view'
-import {PLUGIN_NAME} from "./consts";
+import {MainView} from './view'
+import {PLUGIN_NAME, VIEW_NAME} from "./consts";
 
 interface TreeWalkerSettings {
 	mySetting: string;
@@ -30,8 +30,6 @@ export default class TreeWalker extends Plugin {
 		/**
 		 * Event logic
 		 */
-
-
 		const events = new EventEmitter()
 		const saveCommandDefinition = (this.app as any).commands?.commands?.['editor:save-file'];
 		const save = saveCommandDefinition?.callback;
@@ -77,13 +75,13 @@ export default class TreeWalker extends Plugin {
 			plugin: plugin
 		}
 
-		this.registerView(VIEW_TYPE, (leaf) => new MainView(leaf, appContext))
+		this.registerView(VIEW_NAME, (leaf) => new MainView(leaf, appContext))
 
 		await this.activateView()
 	}
 
 	onunload() {
-		this.app.workspace.detachLeavesOfType(VIEW_TYPE)
+		this.app.workspace.detachLeavesOfType(VIEW_NAME)
 	}
 
 	async loadSettings() {
@@ -95,12 +93,12 @@ export default class TreeWalker extends Plugin {
 	}
 
 	async activateView() {
-		if (this.app.workspace.getLeavesOfType(VIEW_TYPE).length === 0) {
+		if (this.app.workspace.getLeavesOfType(VIEW_NAME).length === 0) {
 			await this.app.workspace.getRightLeaf(false).setViewState({
-				type: VIEW_TYPE, active: true,
+				type: VIEW_NAME, active: true,
 			})
 		}
-		this.app.workspace.revealLeaf(this.app.workspace.getLeavesOfType(VIEW_TYPE)[0])
+		this.app.workspace.revealLeaf(this.app.workspace.getLeavesOfType(VIEW_NAME)[0])
 	}
 }
 
