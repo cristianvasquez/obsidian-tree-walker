@@ -1,8 +1,7 @@
 <script setup lang='ts'>
-import {computed, defineProps, onMounted, ref, watch} from 'vue'
+import {defineProps} from 'vue'
 import Row from "./Row.vue";
-import {rdf, ns, baseNamespace} from '../config.js'
-import InternalLink from "./InternalLink.vue";
+import Term from "./Term.vue";
 
 const props = defineProps({
 	entity: {
@@ -15,34 +14,13 @@ const props = defineProps({
 	},
 })
 
-
-const internalLink = computed(() => {
-
-	const wikipath = props.pointer.node(props.entity.term).out(ns.dot.wikipath).value
-	const linktext =  props.pointer.node(props.entity.term).out(ns.dot.linktext).value
-
-	if (wikipath || linktext){
-		return {
-			wikipath,
-			linktext
-		}
-	}
-
-})
-
-
 </script>
 
 <template>
 	<template v-if="entity.rows">
 		<div class="entity">
 			<div class="entity-header">
-				<template v-if="internalLink">
-					<InternalLink :wikipath="internalLink.wikipath" :linktext="internalLink.linktext"/>
-				</template>
-				<template v-else>
-					<div class="term">{{ entity.label.string }}</div>
-				</template>
+				<Term :term="entity.term" :pointer="pointer" :label="entity.label"/>
 			</div>
 			<template v-for="row of entity.rows">
 				<row :row="row" :pointer="pointer"/>
@@ -50,12 +28,7 @@ const internalLink = computed(() => {
 		</div>
 	</template>
 	<template v-else>
-		<template v-if="internalLink">
-			<InternalLink :wikipath="internalLink.wikipath" :linktext="internalLink.linktext"/>
-		</template>
-		<template v-else>
-			<div class="term">{{ entity.label.string }}</div>
-		</template>
+		<Term :term="entity.term" :pointer="pointer" :label="entity.label"/>
 	</template>
 
 </template>

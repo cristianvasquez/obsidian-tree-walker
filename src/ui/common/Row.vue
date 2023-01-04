@@ -14,17 +14,16 @@ const props = defineProps({
 	},
 })
 
-
-const ignored = rdf.termSet([ns.dot.contains, ns.dot.related])
+// const ignored = rdf.termSet([ns.dot.contains, ns.dot.related])
 
 const showProperties = computed(() => {
-	for (const prop of props.row.properties) {
-		if (!ignored.has(prop.term)) {
-			return true
-		}
-	}
+	return true
+	// for (const prop of props.row.properties) {
+	// 	if (!ignored.has(prop.term)) {
+	// 		return true
+	// 	}
+	// }
 })
-
 
 </script>
 

@@ -6,10 +6,10 @@ const ignoreProperties = rdf.termSet(
 
 const externalLabels = rdf.clownface({ dataset: rdf.dataset() })
 
-externalLabels.node(ns.dot.related).addOut(ns.schema.name, rdf.literal('R'))
-externalLabels.node(ns.dot.contains).addOut(ns.schema.name, rdf.literal('C'))
-externalLabels.node(ns.schema.name).
-	addOut(ns.schema.name, rdf.literal('schema:name'))
+// externalLabels.node(ns.dot.related).addOut(ns.schema.name, rdf.literal('R'))
+// externalLabels.node(ns.dot.contains).addOut(ns.schema.name, rdf.literal('C'))
+// externalLabels.node(ns.schema.name).
+// 	addOut(ns.schema.name, rdf.literal('schema:name'))
 
 const defaultOptions = {
 	technicalCues: true,
@@ -17,7 +17,7 @@ const defaultOptions = {
 	embedLists: true,
 	embedNamedNodes: true,
 	embedBlankNodes: true,
-	maxLevel: 3,
+	maxLevel: 10,
 	groupValuesByProperty: true,
 	groupPropertiesByValue: true,
 	externalLabels,

@@ -13,7 +13,7 @@ let ver = ref(1)
 
 const turtle = ref()
 const debugLink = computed(() => {
-	return `https://converter.zazuko.com/#value=${encodeURIComponent(turtle.value)}&format=text%2Fn3`
+	return `https://converter.zazuko.com/#value=${encodeURIComponent(turtle.value)}&format=application%2Ftrig`
 })
 
 onMounted(async () => {

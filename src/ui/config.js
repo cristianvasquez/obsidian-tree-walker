@@ -10,17 +10,23 @@ const baseNamespace = rdf.namespace('http://example.org/')
 
 const triplifierOptions = {
 	splitOnTag: false,
-	splitOnHeader: true,
+	splitOnHeader: false,
 	splitOnId: true,
 	addLabels: true,
 	includeWikipaths: true,
 }
 
-const customMapper = (str) => {
-	const values = {
-		'is a': ns.rdf.type, 'are': ns.rdf.type, 'ex:knows': ns.ex.knows,
+const customMapper = (str, context) => {
+	// It's of the form schema::name
+	if (str.split(':').length === 2) {
+		const [vocabulary, property] = str.split(':')
+		return ns[vocabulary] ? ns[vocabulary][property] : undefined
 	}
-	return values[str]
+
+	const values = {
+		'is a': ns.rdf.type,
+	}
+	return values [str]
 }
 
 async function createTriplifier (app) {
