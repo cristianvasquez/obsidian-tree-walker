@@ -19,22 +19,19 @@ function getTrailing(url: string): string {
 const context = inject('context')
 
 const props = defineProps({
-	term: {
+	entity: {
 		required: true,
 		type: Object,
 	},
 	pointer: {
 		required: true,
 		type: Object,
-	},
-	label: {
-		type: Object,
 	}
 })
 
 
 const type = computed(() => {
-	const wikipath = props.pointer.node(props.term).out(ns.dot.wikipath).values
+	const wikipath = props.pointer.node(props.entity.term).out(ns.dot.wikipath).values
 	if (wikipath.length) {
 
 		return {
@@ -42,20 +39,20 @@ const type = computed(() => {
 			isInVault: isInVault(wikipath[0])
 		}
 	}
-	const linktext = props.pointer.node(props.term).out(ns.dot.linktext).values
+	const linktext = props.pointer.node(props.entity.term).out(ns.dot.linktext).values
 	if (linktext.length) {
 		return {
 			linkText: linktext[0]
 		}
 	}
-	if (props.term.termType === 'NamedNode') {
+	if (props.entity.term.termType === 'NamedNode') {
 		return {
-			link: props.term.value,
-			isInVault: props.term.value.startsWith(baseNamespace())
+			link: props.entity.term.value,
+			isInVault: props.entity.term.value.startsWith(baseNamespace())
 		}
 	}
 	return {
-		value: props.term.value,
+		value: props.entity.term.value,
 	}
 })
 
@@ -75,6 +72,11 @@ async function hover(link: string, event: MouseEvent) {
 </script>
 
 <template>
+<!--	<template v-if="entity.renderAs==='Image'">-->
+<!--		<div class="img-container"><img :alt="entity.term.value"-->
+<!--										:src="entity.term.value"></div>-->
+
+<!--	</template>-->
 	<template v-if="type.wikiPath">
 		<span>
 				<template v-if="type.isInVault">
@@ -101,10 +103,10 @@ async function hover(link: string, event: MouseEvent) {
 		        </span>
 	</template>
 	<template v-else-if="type.link">
-		<a>{{ label.string }}</a>
+		<a>{{ entity.label.string }}</a>
 	</template>
 	<template v-else>
-		{{ label.string }}
+		{{ entity.label.string }}
 	</template>
 
 </template>

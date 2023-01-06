@@ -20,7 +20,7 @@ const props = defineProps({
 	<template v-if="entity.rows">
 		<div class="entity">
 			<div class="entity-header">
-				<Term :term="entity.term" :pointer="pointer" :label="entity.label"/>
+				<Term :entity="entity" :pointer="pointer"/>
 			</div>
 			<template v-for="row of entity.rows">
 				<row :row="row" :pointer="pointer"/>
@@ -28,7 +28,7 @@ const props = defineProps({
 		</div>
 	</template>
 	<template v-else>
-		<Term :term="entity.term" :pointer="pointer" :label="entity.label"/>
+		<Term :entity="entity" :pointer="pointer"/>
 	</template>
 
 </template>
