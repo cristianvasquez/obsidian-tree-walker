@@ -1,7 +1,7 @@
 import { ns, rdf } from './config.js'
 
 const ignoreProperties = rdf.termSet(
-	[ns.schema.name, ns.rdfs.label, ns.dot.wikipath, ns.dot.linktext])
+	[ns.schema.name, ns.rdfs.label, ns.dot.wikipath, ns.dot.selector])
 
 const externalLabels = rdf.clownface({ dataset: rdf.dataset() })
 
@@ -13,6 +13,7 @@ const externalLabels = rdf.clownface({ dataset: rdf.dataset() })
 const imagePostfix = ['.png', '.jpg', '.jpeg']
 
 const defaultOptions = {
+	sortRows: false,
 	technicalCues: true,
 	highlightLanguage: true,
 	embedLists: true,

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import {hoverPreview, isInVault, openOrSwitch,} from 'obsidian-community-lib'
+import {hoverPreview, isInVault,} from 'obsidian-community-lib'
 import {inject} from '@vue/runtime-core'
 import {computed} from "vue";
-import {baseNamespace, ns} from "../config";
+import {ns} from "../config";
 import {ItemView} from "obsidian";
 import {VIEW_NAME} from "../../consts";
 
@@ -29,41 +29,36 @@ const props = defineProps({
 	}
 })
 
-
-const type = computed(() => {
+const item = computed(() => {
+	const result = {
+		value: props.entity.term.value,
+		label: props.entity.label.string
+	}
 	const wikipath = props.pointer.node(props.entity.term).out(ns.dot.wikipath).values
 	if (wikipath.length) {
+		result.wikipath = wikipath[0]
+		result.isInVault = isInVault(wikipath[0])
+	}
+	const selector = props.pointer.node(props.entity.term).out(ns.dot.selector).values
+	if (selector.length) {
+		result.selector = selector[0]
+	}
+	if (result.isInVault) {
+		result.internalLink = result.selector ? `${result.wikipath}#${result.selector}` : result.wikipath
+	}
 
-		return {
-			wikiPath: wikipath[0],
-			isInVault: isInVault(wikipath[0])
-		}
-	}
-	const linktext = props.pointer.node(props.entity.term).out(ns.dot.linktext).values
-	if (linktext.length) {
-		return {
-			linkText: linktext[0]
-		}
-	}
-	if (props.entity.term.termType === 'NamedNode') {
-		return {
-			link: props.entity.term.value,
-			isInVault: props.entity.term.value.startsWith(baseNamespace())
-		}
-	}
-	return {
-		value: props.entity.term.value,
-	}
+	return result
 })
 
 async function open(link: string, event: MouseEvent) {
-	await openOrSwitch(link, event)
+	const leaf = app.workspace.getLeaf(false);
+	await app.workspace.openLinkText(link, '', leaf)
 }
 
 async function hover(link: string, event: MouseEvent) {
 	//@TS-Ignore
 	const view: ItemView = {
-		app: this.app,
+		app,
 		getViewType: () => VIEW_NAME
 	}
 	await hoverPreview(event, view, link)
@@ -72,41 +67,15 @@ async function hover(link: string, event: MouseEvent) {
 </script>
 
 <template>
-<!--	<template v-if="entity.renderAs==='Image'">-->
-<!--		<div class="img-container"><img :alt="entity.term.value"-->
-<!--										:src="entity.term.value"></div>-->
-
-<!--	</template>-->
-	<template v-if="type.wikiPath">
-		<span>
-				<template v-if="type.isInVault">
-				  <a
-					  @click="(event)=>open(type.wikiPath, event)"
-					  @mouseover="(event)=>hover(type.wikiPath, event)"
-					  class="internal-link"
-				  >{{ getTitle(type.wikiPath) }}</a>
-				</template>
-				<template v-else>
-					<span>
-						{{ getTitle(type.wikiPath) }}
-					</span>
-				</template>
-				</span>
-	</template>
-	<template v-else-if="type.linkText">
-				<span
-					class="internal-link"
-					@mouseover="(event)=>hover(type.linkText, event)">
-		          <a class="internal-link">
-					  {{ getTrailing(type.linkText) }} {{ label.string }}
-				  </a>
-		        </span>
-	</template>
-	<template v-else-if="type.link">
-		<a>{{ entity.label.string }}</a>
+	<!--	{{item}}-->
+	<template v-if="item.internalLink">
+		<a
+			@click="(event)=>open(item.internalLink, event)"
+			@mouseover="(event)=>hover(item.internalLink, event)"
+			class="internal-link"
+		>{{ item.label }}</a>
 	</template>
 	<template v-else>
-		{{ entity.label.string }}
+		{{ item.label }}
 	</template>
-
 </template>

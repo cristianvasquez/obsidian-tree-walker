@@ -1,5 +1,4 @@
 import { fromTermMapper } from 'vault-triplifier/index.js'
-import { createVaultFromObsidian } from 'vault-triplifier/src/indexers/vault.js'
 import ns from 'vault-triplifier/src/namespaces.js'
 import rdf from 'vault-triplifier/src/rdf-ext.js'
 import {
@@ -12,17 +11,27 @@ import {
 const baseNamespace = rdf.namespace('http://example.org/')
 
 const triplifierOptions = {
-	splitOnTag: false,
-	splitOnHeader: false,
+	splitOnTag: true,
+	splitOnHeader: true,
 	splitOnId: true,
 	addLabels: true,
 	includeWikipaths: true,
 }
 
+async function createVaultFromObsidian (app) {
+	return {
+		getPathByName: (
+			noteMD, activePath) => {
+			return app.metadataCache.getFirstLinkpathDest(noteMD,
+				activePath)
+		},
+	}
+}
+
 async function createTriplifier (app) {
-	const vault = await createVaultFromObsidian(app)
+	const { getPathByName } = await createVaultFromObsidian(app)
 	const termMapper = createTermMapper({
-		vault, customMapper, baseNamespace: baseNamespace,
+		getPathByName, customMapper, baseNamespace,
 	})
 
 	return fromTermMapper(termMapper)
